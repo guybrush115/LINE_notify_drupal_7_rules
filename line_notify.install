@@ -1,0 +1,5 @@
+<?php
+
+function line_notify_install() {
+  
+}

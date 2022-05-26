@@ -1,0 +1,3 @@
+name = Line notify
+description = Line notify action for Rules module
+core = 7.x

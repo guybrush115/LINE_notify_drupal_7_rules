@@ -1,0 +1,79 @@
+<?php
+
+function line_notify_rules_action_info() {
+  $actions = array();
+  $actions['line_notify_send_message'] = array(
+//    'base' => 'line_notify_rules_send_message_action',
+    'label' => t('Line notify send message'),
+    'group' => t('Line notify'),
+    'parameter' => array(
+      'sToken' => array(
+        'type' => 'text',
+        'label' => t('sToken'),
+        'description' => t("sToken for line notify"),
+        'optional' => FALSE,
+      ),
+      'message' => array(
+        'type' => 'text',
+        'label' => t('Sending message'),
+      ),
+    ),
+  );
+  return $actions;
+}
+
+function line_notify_rules_send_message_action($sToken,$message) {
+  line_notify_send_message($sToken, $message);
+}
+
+function line_notify_send_message($sToken = "XLA4M4a05z8C2jBa7DQ0ha85D8ZCCvnJ71hIB4wTvbT", $message = 'Test') {
+
+  $headers = array( 'Content-type' => 'application/x-www-form-urlencoded',
+    'Authorization' => 'Bearer '.$sToken,
+  );
+  $sMessage = "Test line notify";
+  $message_options['message'] = $message;
+//  $sending_data = json_encode($message_options,JSON_UNESCAPED_SLASHES);
+  $options = array(
+    'headers' => $headers,
+    'method' => 'POST',
+//    'message' => $message,
+    'data' => drupal_http_build_query($message_options),
+  );
+//  drupal_set_message($message);
+
+  $sending_url = "https://notify-api.line.me/api/notify";
+  $result = drupal_http_request($sending_url, $options);
+
+  return $result;
+
+// curl code
+/*
+  ini_set('display_errors', 1);
+  ini_set('display_startup_errors', 1);
+  error_reporting(E_ALL);
+  date_default_timezone_set("Asia/Bangkok");
+  $chOne = curl_init();
+  curl_setopt( $chOne, CURLOPT_URL, "https://notify-api.line.me/api/notify");
+  curl_setopt( $chOne, CURLOPT_SSL_VERIFYHOST, 0);
+  curl_setopt( $chOne, CURLOPT_SSL_VERIFYPEER, 0);
+  curl_setopt( $chOne, CURLOPT_POST, 1);
+  curl_setopt( $chOne, CURLOPT_POSTFIELDS, "message=".$message);
+  $headers = array( 'Content-type: application/x-www-form-urlencoded', 'Authorization: Bearer '.$sToken.'', );
+  curl_setopt($chOne, CURLOPT_HTTPHEADER, $headers);
+  curl_setopt( $chOne, CURLOPT_RETURNTRANSFER, 1);
+  $result = curl_exec( $chOne );
+*/
+/*
+  //Result error
+  if(curl_error($chOne))
+  {
+    echo 'error:' . curl_error($chOne);
+  }
+  else {
+    $result_ = json_decode($result, true);
+    echo "status : ".$result_['status']; echo "message : ". $result_['message'];
+  }
+  curl_close( $chOne );
+  */
+}
